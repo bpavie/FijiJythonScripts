@@ -1,3 +1,4 @@
+import os
 from org.jfree.chart import ChartFactory
 from org.jfree.chart.plot import PlotOrientation
 from org.jfree.chart.axis import NumberAxis
@@ -5,19 +6,20 @@ from org.jfree.data.statistics import DefaultStatisticalCategoryDataset
 #from org.jfree.chart.encoders import *
 from org.jfree.chart.renderer.category import StatisticalBarRenderer
 
-from java.awt import Color
+from java.awt import Color, Rectangle
 from java.awt.geom import *
-from java.io import *
+from java.io import File, FileOutputStream, OutputStreamWriter
 
 from org.jfree.ui import RectangleInsets
 from org.jfree.data.category import *
 from org.jfree.data.statistics import *
 
-
+from org.apache.batik.dom import GenericDOMImplementation
+from org.apache.batik.svggen import SVGGraphics2D
 #from org.apache.batik.dom import *
 #from org.apache.batik.svggen import *
 
-from ij import ImagePlus
+from ij import ImagePlus, IJ
  
 dataset = DefaultStatisticalCategoryDataset()
  
@@ -48,17 +50,42 @@ rangeAxis.setRange(0, 40)
  
 #customise the renderer...
 renderer = StatisticalBarRenderer();
-renderer.setErrorIndicatorPaint(Color.black);
-renderer.setSeriesOutlinePaint(0,Color.black);
-renderer.setSeriesOutlinePaint(1,Color.black);
-renderer.setSeriesPaint(0,Color.black);
-renderer.setSeriesPaint(1,Color.white);
-renderer.setItemMargin(0.0);
-plot.setRenderer(0,renderer);
+renderer.setErrorIndicatorPaint(Color.black)
+renderer.setSeriesOutlinePaint(0,Color.black)
+renderer.setSeriesOutlinePaint(1,Color.black)
+renderer.setSeriesPaint(0,Color.black)
+renderer.setSeriesPaint(1,Color.white)
+renderer.setItemMargin(0.0)
+plot.setRenderer(0,renderer)
  
-renderer.setDrawBarOutline(True);
+renderer.setDrawBarOutline(True)
  
-bi = chart.createBufferedImage(600, 400);
+bi = chart.createBufferedImage(600, 400)
  
-imp = ImagePlus("Chart Test", bi);
-imp.show();
+imp = ImagePlus('Chart Test', bi)
+imp.show()
+
+####################
+# Create SVG image #
+####################
+
+#Could be open using inkscape, see https://inkscape.org
+#1- Get a DOMImplementation and create an XML document
+domImpl = GenericDOMImplementation.getDOMImplementation()
+document = domImpl.createDocument(None, 'svg', None)
+#2-Create an instance of the SVG Generator
+svgGenerator = SVGGraphics2D(document)
+#3-Draw the chart in the SVG generator
+bounds = Rectangle(600, 400)
+chart.draw(svgGenerator, bounds)
+#4-Select a folder to save the SVG
+dir = IJ.getDirectory('Where should the svg file be saved?')
+#5-Write the SVG file
+svgFile = File(dir + 'test.svg')
+outputStream = FileOutputStream(svgFile)
+out = OutputStreamWriter(outputStream, 'UTF-8')
+svgGenerator.stream(out, True)
+outputStream.flush()
+outputStream.close()
+
+print 'Saved in %s' % (os.path.join(dir,'test.svg'))
