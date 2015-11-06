@@ -17,7 +17,7 @@ from ij import ImagePlus, IJ
 from org.apache.batik.dom import GenericDOMImplementation
 from org.apache.batik.svggen import SVGGraphics2D
 
-#Fill a arraylist of random values constrain on some limits
+#Fill an ArrayList of random values constrain on some limits
 def createValueList(d, d1, i):
   arraylist = ArrayList()
   for j in range(0, i):#Generate 20 values for each serie
@@ -25,7 +25,7 @@ def createValueList(d, d1, i):
     arraylist.add(Double(d2))
   return arraylist
 
-#Create te default dataset for the BoxAndWhisker
+#Create the default dataset for the BoxAndWhisker
 def createDataSet():
   dataset = DefaultBoxAndWhiskerCategoryDataset()
   for i in range(0, 3):#Generate 3 series for each category
@@ -73,5 +73,3 @@ out = OutputStreamWriter(outputStream, 'UTF-8')
 svgGenerator.stream(out, True)
 outputStream.flush()
 outputStream.close()
-
-
