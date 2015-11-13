@@ -82,12 +82,12 @@ bounds = Rectangle(600, 400)
 chart.draw(svgGenerator, bounds)
 #4-Select a folder to save the SVG
 dir = IJ.getDirectory('Where should the svg file be saved?')
-#5-Write the SVG file
-svgFile = File(dir + 'test.svg')
-outputStream = FileOutputStream(svgFile)
-out = OutputStreamWriter(outputStream, 'UTF-8')
-svgGenerator.stream(out, True)
-outputStream.flush()
-outputStream.close()
-
-print 'Saved in %s' % (os.path.join(dir,'test.svg'))
+if(dir!=None):
+  #5-Write the SVG file
+  svgFile = File(dir + 'test.svg')
+  outputStream = FileOutputStream(svgFile)
+  out = OutputStreamWriter(outputStream, 'UTF-8')
+  svgGenerator.stream(out, True)
+  outputStream.flush()
+  outputStream.close()
+  print 'Saved in %s' % (os.path.join(dir,'test.svg'))
